@@ -3,162 +3,508 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FB Account Service Portal</title>
+    <title>FB Account Service Portal & Catalog</title>
     <style>
         :root {
-            --primary: #1877f2; /* Facebook Blue */
-            --bg: #121212;
-            --card-bg: #1e1e1e;
-            --text: #ffffff;
-            --text-muted: #b0b0b0;
+            --primary: #1877f2;
+            --primary-hover: #165fe5;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --accent: #38bdf8;
         }
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
             padding: 0;
+            line-height: 1.5;
         }
         header {
             background-color: var(--card-bg);
-            padding: 2rem 1rem;
+            padding: 2.5rem 1rem;
             text-align: center;
             border-bottom: 2px solid var(--primary);
         }
-        header h1 { margin: 0; color: var(--primary); }
-        header p { color: var(--text-muted); margin-top: 0.5rem; }
+        header h1 { margin: 0; color: var(--primary); font-size: 2.2rem; }
+        header p { color: var(--text-muted); margin-top: 0.5rem; font-size: 1.05rem; }
         
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 2rem auto;
             padding: 0 1rem;
         }
         .notice {
             background: rgba(24, 119, 242, 0.1);
             border-left: 4px solid var(--primary);
-            padding: 1rem;
+            padding: 1.2rem;
             margin-bottom: 2rem;
             font-size: 0.9rem;
-            color: #d1d5db;
+            color: #cbd5e1;
+            border-radius: 0 6px 6px 0;
         }
+        
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+        .tab-btn {
+            background-color: var(--card-bg);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 0.7rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .tab-btn:hover, .tab-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Sections */
+        .section-content {
+            display: none;
+        }
+        .section-content.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 1.5rem;
         }
         .card {
             background-color: var(--card-bg);
-            border-radius: 6px;
+            border-radius: 8px;
             padding: 1.5rem;
-            border: 1px solid #333;
+            border: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: #475569;
         }
         .badge {
-            background: #333;
-            color: #38bdf8;
+            background: #0f172a;
+            color: var(--accent);
             font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
+            padding: 0.3rem 0.6rem;
             border-radius: 4px;
             display: inline-block;
             margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            border: 1px solid var(--border);
         }
-        .card h3 { margin: 0 0 0.5rem 0; font-size: 1.1rem; }
+        .card h3 { margin: 0 0 0.75rem 0; font-size: 1.1rem; }
         .features {
             color: var(--text-muted);
             font-size: 0.85rem;
             margin-bottom: 1.5rem;
-            line-height: 1.4;
         }
         .footer-card {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-top: 1px solid #333;
+            border-top: 1px solid var(--border);
             padding-top: 1rem;
         }
-        .price { font-size: 1.2rem; font-weight: bold; color: #4ade80; }
+        .price-status { font-size: 0.9rem; font-weight: bold; color: #4ade80; }
         .btn {
             background-color: var(--primary);
             color: white;
             border: none;
-            padding: 0.5rem 1rem;
+            padding: 0.55rem 1rem;
             border-radius: 4px;
             cursor: pointer;
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: bold;
         }
-        .btn:hover { background-color: #165fe5; }
+        .btn:hover { background-color: var(--primary-hover); }
+
+        /* Contact Form Styles */
+        .contact-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text);
+            font-size: 1rem;
+        }
+        .form-group textarea { resize: vertical; height: 120px; }
+        .submit-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+        .submit-btn:hover { background-color: var(--primary-hover); }
+
+        footer {
+            text-align: center;
+            padding: 2.5rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+            margin-top: 4rem;
+        }
     </style>
 </head>
 <body>
 
     <header>
         <h1>FB Account Service Hub</h1>
-        <p>Providing Fresh, Aged, and Phone-Verified Facebook Profiles</p>
+        <p>Professional Availability Catalog for Standard, Country-Specific & Marketplace Profiles</p>
     </header>
 
     <div class="container">
-        <!-- Notice confirming service nature -->
+        <!-- Service Notice -->
         <div class="notice">
-            <strong>Service Notice:</strong> This website functions strictly as an informational availability catalog. No automated merchant gateway or direct money collection takes place on this platform. All account service requests are coordinated directly via our support channel.
+            <strong>Service Notice:</strong> This website operates strictly as an informational availability catalog and service directory. No automated merchant gateway or direct money collection takes place on this platform. All service requests are coordinated directly via our support channels or contact form below.
         </div>
 
-        <div class="grid">
-            <!-- Item 1 -->
-            <div class="card">
-                <div>
-                    <span class="badge">Fresh Accounts</span>
-                    <h3>Fresh FB ID (Phone Verified)</h3>
-                    <div class="features">
-                        • Created with unique IPs<br>
-                        • Email & Phone verified (PVA)<br>
-                        • Includes profile setup details
-                    </div>
-                </div>
-                <div class="footer-card">
-                    <div class="price">$0.80 / ID</div>
-                    <a href="https://t.me/yourusername" target="_blank" class="btn">Inquire / Request</a>
-                </div>
-            </div>
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab(event, 'all')">All Services</button>
+            <button class="tab-btn" onclick="switchTab(event, 'standard')">Standard & 2FA IDs</button>
+            <button class="tab-btn" onclick="switchTab(event, 'pages-friends')">Friends & Pages</button>
+            <button class="tab-btn" onclick="switchTab(event, 'countries')">Country Specific IDs</button>
+            <button class="tab-btn" onclick="switchTab(event, 'marketplace')">Marketplace Accounts</button>
+            <button class="tab-btn" onclick="switchTab(event, 'contact')">Contact Us</button>
+        </div>
 
-            <!-- Item 2 -->
-            <div class="card">
-                <div>
-                    <span class="badge">Aged Accounts</span>
-                    <h3>USA Aged FB ID (2020 - 2022)</h3>
-                    <div class="features">
-                        • Historic profile creation<br>
-                        • High trust score baseline<br>
-                        • Includes recovery email access
+        <!-- TAB 1: ALL SERVICES -->
+        <div id="all" class="section-content active">
+            <div class="section-title">Complete Catalog Service Directory</div>
+            <div class="grid" id="all-grid">
+                <!-- Items injected dynamically via script or listed out -->
+                <div class="card">
+                    <div>
+                        <span class="badge">Fresh Login</span>
+                        <h3>1. U ID Password (Fresh Single Login)</h3>
+                        <div class="features">• Clean fresh profile creation<br>• Single IP creation standard<br>• Basic login data included</div>
+                    </div>
+                    <div class="footer-card">
+                        <span class="price-status">Available</span>
+                        <a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a>
                     </div>
                 </div>
-                <div class="footer-card">
-                    <div class="price">$2.50 / ID</div>
-                    <a href="https://t.me/yourusername" target="_blank" class="btn">Inquire / Request</a>
-                </div>
-            </div>
 
-            <!-- Item 3 -->
-            <div class="card">
-                <div>
-                    <span class="badge">Aged / Active Style</span>
-                    <h3>Europe Aged FB Profile with Friends</h3>
-                    <div class="features">
-                        • GEO: EU Region<br>
-                        • Comes with random added friends<br>
-                        • Ready for marketplace/ads use setup
+                <div class="card">
+                    <div>
+                        <span class="badge">2FA Protected</span>
+                        <h3>2. U ID Password 2FA (Fresh Single Login)</h3>
+                        <div class="features">• Two-factor authentication enabled<br>• Extra security baseline<br>• Ready for immediate session token use</div>
+                    </div>
+                    <div class="footer-card">
+                        <span class="price-status">Available</span>
+                        <a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a>
                     </div>
                 </div>
-                <div class="footer-card">
-                    <div class="price">$4.00 / ID</div>
-                    <a href="https://t.me/yourusername" target="_blank" class="btn">Inquire / Request</a>
+
+                <div class="card">
+                    <div>
+                        <span class="badge">Outlook Access</span>
+                        <h3>3. U ID Password 2FA Outlook & Password</h3>
+                        <div class="features">• Includes recovery Outlook email credential<br>• 2FA active on Facebook profile<br>• Full mail access control</div>
+                    </div>
+                    <div class="footer-card">
+                        <span class="price-status">Available</span>
+                        <a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <span class="badge">Full Control</span>
+                        <h3>4. Full Access ID</h3>
+                        <div class="features">• Complete handover credentials<br>• Mail + Phone details linked<br>• Maximum configuration accessibility</div>
+                    </div>
+                    <div class="footer-card">
+                        <span class="price-status">Available</span>
+                        <a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <span class="badge">With Friends</span>
+                        <h3>5. 2FA + 100 Friends Profile</h3>
+                        <div class="features">• Fresh single login with 2FA<br>• Pre-added network of ~100 friends<br>• Natural profile look</div>
+                    </div>
+                    <div class="footer-card">
+                        <span class="price-status">Available</span>
+                        <a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <span class="badge">Active Network</span>
+                        <h3>6. 2FA + 500-1000 Friends Profile</h3>
+                        <div class="features">• Heavy friend network (500 to 1000)<br>• Active timeline footprint<br>• 2FA protection enabled</div>
+                    </div>
+                    <div class="footer-card">
+                        <span class="price-status">Available</span>
+                        <a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <span class="badge">With Page</span>
+                        <h3>7. 2FA Profile with Integrated Page</h3>
+                        <div class="features">• Profile comes with an attached page<br>• Single login security (2FA)<br>• Ready for publishing setup</div>
+                    </div>
+                    <div class="footer-card">
+                        <span class="price-status">Available</span>
+                        <a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <span class="badge">USA Page</span>
+                        <h3>8. 2FA Profile with USA Name Page</h3>
+                        <div class="features">• Localized USA naming structure page<br>• High-trust geo positioning<br>• 2FA secure login format</div>
+                    </div>
+                    <div class="footer-card">
+                        <span class="price-status">Available</span>
+                        <a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <span class="badge">UK Page</span>
+                        <h3>9. 2FA Profile with UK Page Name</h3>
+                        <div class="features">• UK targeted page naming convention<br>• Clean session parameters<br>• Fresh single login capability</div>
+                    </div>
+                    <div class="footer-card">
+                        <span class="price-status">Available</span>
+                        <a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <span class="badge">Indonesian Page</span>
+                        <h3>10. 2FA Profile with Indonesian Name Page</h3>
+                        <div class="features">• Regional ID profile alignment<br>• Local naming context page attached<br>• Secure 2FA token ready</div>
+                    </div>
+                    <div class="footer-card">
+                        <span class="price-status">Available</span>
+                        <a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <span class="badge">Marketplace</span>
+                        <h3>11. UK Facebook Marketplace ID</h3>
+                        <div class="features">• Location-confirmed UK parameters<br>• Unlocked Marketplace module access<br>• Optimized for regional commerce</div>
+                    </div>
+                    <div class="footer-card">
+                        <span class="price-status">Available</span>
+                        <a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <span class="badge">Marketplace</span>
+                        <h3>12. USA Facebook Marketplace ID</h3>
+                        <div class="features">• USA number created & location-locked<br>• Best-in-class Marketplace availability<br>• Verified trust profile</div>
+                    </div>
+                    <div class="footer-card">
+                        <span class="price-status">Available</span>
+                        <a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-</body>
-</html>
+        <!-- TAB 2: STANDARD & 2FA IDs -->
+        <div id="standard" class="section-content">
+            <div class="section-title">Standard & 2FA Tiers</div>
+            <div class="grid">
+                <div class="card">
+                    <div>
+                        <span class="badge">Fresh Login</span>
+                        <h3>U ID Password (Fresh Single Login)</h3>
+                        <div class="features">• Clean fresh profile creation<br>• Single IP creation standard</div>
+                    </div>
+                    <div class="footer-card"><span class="price-status">Available</span><a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a></div>
+                </div>
+                <div class="card">
+                    <div>
+                        <span class="badge">2FA Protected</span>
+                        <h3>U ID Password 2FA (Fresh Single Login)</h3>
+                        <div class="features">• Two-factor authentication enabled<br>• Extra security baseline</div>
+                    </div>
+                    <div class="footer-card"><span class="price-status">Available</span><a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a></div>
+                </div>
+                <div class="card">
+                    <div>
+                        <span class="badge">Outlook Access</span>
+                        <h3>U ID Password 2FA Outlook & Password</h3>
+                        <div class="features">• Includes recovery Outlook email credential<br>• 2FA active on Facebook profile</div>
+                    </div>
+                    <div class="footer-card"><span class="price-status">Available</span><a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a></div>
+                </div>
+                <div class="card">
+                    <div>
+                        <span class="badge">Full Control</span>
+                        <h3>Full Access ID</h3>
+                        <div class="features">• Complete handover credentials<br>• Mail + Phone details linked</div>
+                    </div>
+                    <div class="footer-card"><span class="price-status">Available</span><a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: FRIENDS & PAGES -->
+        <div id="pages-friends" class="section-content">
+            <div class="section-title">Profiles with Friends & Pages</div>
+            <div class="grid">
+                <div class="card">
+                    <div>
+                        <span class="badge">With Friends</span>
+                        <h3>2FA + Friends 100 Profile</h3>
+                        <div class="features">• Fresh single login with 2FA<br>• Pre-added network of ~100 friends</div>
+                    </div>
+                    <div class="footer-card"><span class="price-status">Available</span><a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a></div>
+                </div>
+                <div class="card">
+                    <div>
+                        <span class="badge">Active Network</span>
+                        <h3>2FA + Friends (500-1000) Profile</h3>
+                        <div class="features">• Heavy friend network (500 to 1000)<br>• Active timeline footprint</div>
+                    </div>
+                    <div class="footer-card"><span class="price-status">Available</span><a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a></div>
+                </div>
+                <div class="card">
+                    <div>
+                        <span class="badge">With Page</span>
+                        <h3>2FA Profile with Integrated Page</h3>
+                        <div class="features">• Profile comes with an attached page<br>• Single login security (2FA)</div>
+                    </div>
+                    <div class="footer-card"><span class="price-status">Available</span><a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a></div>
+                </div>
+                <div class="card">
+                    <div>
+                        <span class="badge">USA Page</span>
+                        <h3>2FA Profile with USA Name Page</h3>
+                        <div class="features">• Localized USA naming structure page<br>• High-trust geo positioning</div>
+                    </div>
+                    <div class="footer-card"><span class="price-status">Available</span><a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a></div>
+                </div>
+                <div class="card">
+                    <div>
+                        <span class="badge">UK Page</span>
+                        <h3>2FA Profile with UK Page Name</h3>
+                        <div class="features">• UK targeted page naming convention<br>• Clean session parameters</div>
+                    </div>
+                    <div class="footer-card"><span class="price-status">Available</span><a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a></div>
+                </div>
+                <div class="card">
+                    <div>
+                        <span class="badge">Indonesian Page</span>
+                        <h3>2FA Profile with Indonesian Name Page</h3>
+                        <div class="features">• Regional ID profile alignment<br>• Local naming context page attached</div>
+                    </div>
+                    <div class="footer-card"><span class="price-status">Available</span><a href="https://t.me/yourusername" target="_blank" class="btn">Inquire Service</a></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: COUNTRY-SPECIFIC IDS -->
+        <div id="countries" class="section-content">
+            <div class="section-title">Country-Specific FB Profile Tiers (UK, US, Nigeria, Bulgaria, Austria, Indonesia & Philippines)</div>
+            <div class="grid">
+                <div class="card">
+                    <div>
+                        <span class="badge">UK Tiers</span>
+                        <h3>United Kingdom (UK) FB Profiles</h3>
+                        <div class="features">• Available in Fresh, 2FA, Outlook, Full Access, or with Pages/Friends configurations.</div>
+                    </div>
+                    <div class="footer-card"><span class="price-status">Inquire GEO</span><a href="https://t.me/yourusername" target="_blank" class="btn">Request UK ID</a></div>
+                </div>
+                <div class="card">
+                    <div>
+                        <span class="badge">US Tiers</span>
+                        <h3>United States (US) FB Profiles</h3>
+                        <div class="features">• Available in Fresh, 2FA, Outlook, Full Access, or with Pages/Friends configurations.</div>
+                    </div>
+                    <div class="footer-card"><span class="price-status">Inquire GEO</span><a href="https://t.me/yourusername" target="_blank" class="btn">Request US ID</a></div>
+                </div>
+                <div class="card">
+                    <div>
+                        <span class="badge">Nigeria Tiers</span>
+                        <h3>Nigeria FB Profiles</h3>
+                        <div class="features">• Available in Fresh, 2FA, Outlook, Full Access, or with Pages/Friends configurations.</div>
+                    </div>
+                    <div class="footer-card"><span class="price-status">Inquire GEO</span><a href="https://t.me/yourusername" target="_blank" class="btn">Request Nigeria ID</a></div>
+                </div>
+                <div class="card">
+                    <div>
+                        <span class="badge">Bulgaria Tiers</span>
+                        <h3>Bulgaria FB Profiles</h3>
+                        <div class="features">• Available in Fresh, 2FA, Outlook, Full Access, or with Pages/Friends configurations.</div>
+                    </div>
+                    <div class="footer-card"><span class="price-status">Inquire GEO</span><a href="https://t.me/yourusername" target="_blank" class="btn">Request Bulgaria ID</a></div>
+                </div>
+                <div class="card">
+                    <div>
+                        <span class="badge">Austria Tiers</span>
+                        <h3>Austria FB Profiles</h3>
+                        <div class="features">• Available in Fresh, 2FA, Outlook, Full Access, or with Pages/Friends configurations.</div>
+                    </div>
+                    <div class="footer-card"><span class="price-status">Inquire GEO</span><a href="https://t.me/yourusername" target="_blank" class="btn">Request Austria ID</a></div>
+                </div>
